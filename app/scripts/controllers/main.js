@@ -17,13 +17,7 @@ var baseUrl = 'http://localhost:3002/tasks';
 app.controller('MainCtrl', ['$scope', '$http', '$uibModal', '$rootScope', function ($scope, $http, $uibModal, $rootScope, data) {
     $rootScope.tasks = [];
     
-    $scope.options = [{
-        id: 1,
-        label: 'Pendente',
-      }, {
-        id: 2,
-        label: 'Concluída',
-      }];
+
 
     $http.get(baseUrl).then(function (response) {
         $rootScope.tasks = response.data.dataTask;
@@ -33,7 +27,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$uibModal', '$rootScope', functi
 
     const validacaoDeCampos = function () {
         if (angular.element('#responsibleEmailInput').val() == '' || angular.element('#responsibleInput').val() == '' ||
-            angular.element('#descriptionInput').val() == '' || $scope.selectStatus == null) {
+            angular.element('#descriptionInput').val() == '' || angular.element('#statusInput').val() == '') {
             swal("Campos em branco", " Por favor informe todos os dados dos campos! ", "warning");
             validacao = 0;
         } else {
@@ -43,7 +37,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$uibModal', '$rootScope', functi
     }
 
     const apagarCampos = function () {
-        $scope.selectStatus = null;
+        $scope.statusInput = null;
         $scope.descriptionInput = null;
         $scope.responsibleInput = null;
         $scope.responsibleEmailInput = null;
@@ -58,14 +52,16 @@ app.controller('MainCtrl', ['$scope', '$http', '$uibModal', '$rootScope', functi
             //var documento = angular.element('#documentoInput').val().replace(/\D/g, '');
             var tamanhoTasks = $rootScope.tasks.length;
             $http.post("http://apilayer.net/api/check?access_key=9c3a308e83057808906c5fb1f769057c&email="+angular.element('#responsibleEmailInput').val()).then(function(res){
-                if(res.data.mx_found == true && res.data.format_valid == true){
+               
                 var objTask = {
                     "responsible": angular.element('#responsibleInput').val(),
                     "responsibleEmail": angular.element('#responsibleEmailInput').val(),
                     "description": angular.element('#descriptionInput').val(),
-                    "status": status.label
+                    "comeToPending": 0,
+                    "status": angular.element('#statusInput').val()
                 }
-                        //var key = tasks + 1;
+            if(res.data.mx_found == true && res.data.format_valid == true){
+              
                         $http.post(baseUrl, objTask).then(function (response) {
                             if (response) {
                                 $rootScope.tasks.push(response.data);
@@ -78,58 +74,84 @@ app.controller('MainCtrl', ['$scope', '$http', '$uibModal', '$rootScope', functi
                        }) ;
             
         }else{
-            swal(" Seu email não é válido!", "Você informou o email "+ angular.element('#responsibleEmailInput').val() +", mas acho que você tentou digitar"+res.data.did_you_mean+', devido a isso troquei o email na caixa de texto. Tente novamente.', "error");
-            $scope.responsibleEmailInput = res.data.did_you_mean;
+            if(res.data.did_you_mean != undefined){
+                swal(" Seu email não é válido!", "Você informou o email "+ angular.element('#responsibleEmailInput').val() +", mas acho que você tentou digitar "+res.data.did_you_mean+', devido a isso troquei o email na caixa de texto. Tente novamente.', "error");
+                $scope.responsibleEmailInput = res.data.did_you_mean;
+            }else{
+                $http.post(baseUrl, objTask).then(function (response) {
+                    if (response) {
+                        $rootScope.tasks.push(response.data);
+                        swal("Adicionado", " Adicionado com Sucesso! ", "success");
+                        apagarCampos();
+                    };
+                },
+                function(error){
+                    console.log(error); 
+               }) ;
+            }
         }
     })
         }
     };
 
 
-    $scope.remover = function (cliente) {
-        
-                var key = $rootScope.clientes.indexOf(cliente);
-                $http.delete(baseUrl + '/delete/' + cliente._id).then(function (response) {
-                    if (response) {
-                        if (key !== -1) {
-                            $rootScope.clientes.splice(key, 1);
-                            swal("Removido!", " Removido com Sucesso! ", "success");
-                        }
-                    }
-                });   
-    };
 
+    $scope.modalEditar = function (eTask) {
 
-    $scope.modalEditar = function (eCliente) {
         var modalInstance = $uibModal.open({
-            templateUrl: 'views/editarCliente.html',
+            templateUrl: 'views/editTasks.html',
             controller: 'editarCtrl',
         })
-        sessionStorage.eCliente = JSON.stringify(eCliente);
-        sessionStorage.key = $rootScope.clientes.indexOf(eCliente);
+        sessionStorage.eTask = JSON.stringify(eTask);
+        sessionStorage.key = $rootScope.tasks.indexOf(eTask);
     }
-}]).controller('editarCtrl', function ($scope, $uibModalInstance, $http) {
+    }]).controller('editarCtrl', function ($scope, $uibModalInstance, $http) {
+    $scope.eTask = JSON.parse(sessionStorage.eTask);
+    $scope.statusInputE = $scope.eTask.status;
 
-    $scope.eCliente = JSON.parse(sessionStorage.eCliente);
-    sessionStorage.idEdicao = $scope.eCliente._id;
+    sessionStorage.idEdicao = $scope.eTask.id;
 
+    $scope.verifyStatusUpdate = function () {
+        $scope.eTask.enablePassword = false;
+        var comeToPending = $scope.eTask.comeToPending;
+        if($scope.eTask.status == 'c' && angular.element('#statusInputE').val() == 'p'){
+            console.log('tem que aumentar')
+            comeToPending = comeToPending +1;
+            $scope.eTask.comeToPending = comeToPending;
+            if(comeToPending <= 2){
+                $scope.eTask.enablePassword = true;           
+            }      
+        }
+    }
+
+
+    $scope.alterarComoSurpervisor = function (){
+        if($scope.passwordE == "TrabalheNaSaipos"){
+            $scope.alterar();
+        }else{
+            swal("Senha inválida!", " Tenta novamente ", "error");
+    }
+    }
 
     $scope.alterar = function () {
-        var documento = angular.element('#documentoInputE').val().replace(/\D/g, '');
-        var objCliente = {
-            "nome": angular.element('#nomeInputE').val(),
-            "dataNascimento": angular.element('#dataNascimentoInputE').val(),
-            "documento": documento,
-            "servicos": ["Aplicativo Android"]
+        var comeToPending = $scope.eTask.comeToPending;
+       
+        var objTask = {
+            "responsible": angular.element('#responsibleInputE').val(),
+            "responsibleEmail": angular.element('#responsibleEmailInputE').val(),
+            "description": angular.element('#descriptionInputE').val(),
+            "comeToPending": comeToPending,
+            "status":  angular.element('#statusInputE').val()
         }
-   
-                $http.put(baseUrl + '/editar/' + sessionStorage.idEdicao, objCliente).then(function (response) {
+                $http.put(baseUrl + '/'+sessionStorage.idEdicao, objTask).then(function (response) {
                     if (response) {
-                        for (var i = 0; i < $scope.clientes.length; i++) {
-                            if ($scope.clientes[i]._id == sessionStorage.idEdicao) {
-                                $scope.clientes[i].nome = objCliente.nome;
-                                $scope.clientes[i].dataNascimento = objCliente.dataNascimento;
-                                $scope.clientes[i].documento = objCliente.documento;
+                        for (var i = 0; i < $scope.tasks.length; i++) {
+                            if ($scope.tasks[i].id == sessionStorage.idEdicao) {
+                                $scope.tasks[i].responsible = objTask.responsible;
+                                $scope.tasks[i].responsibleEmail = objTask.responsibleEmail;
+                                $scope.tasks[i].description = objTask.description;
+                                $scope.tasks[i].comeToPending = objTask.comeToPending;
+                                $scope.tasks[i].status = objTask.status;
                                 swal("Alterado!", " Dados alterados com Sucesso! ", "success");
                             };
                         };
@@ -138,6 +160,9 @@ app.controller('MainCtrl', ['$scope', '$http', '$uibModal', '$rootScope', functi
 
         $uibModalInstance.close();
     };
+
+
+    
     $scope.cancelar = function () {
         $uibModalInstance.dismiss('cancel');
     };

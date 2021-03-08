@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h3 class="modal-title" id="modal-title">Edição de clientes</h3>
+    <h3 class="modal-title" id="modal-title">Edição de tarefas</h3>
 </div>
 <div class="modal-body" id="modal-body">
 
@@ -12,6 +12,7 @@
                 <th class="col-sm-5">Responsável</th>
                 <th class="col-sm-3">Email do Responsável</th>
                 <th class="col-sm-4">Descrição</th>
+                <th class="col-sm-4">Status</th>
             </tr>
         </thead>
         <tbody>
@@ -21,13 +22,16 @@
                         value="{{eTask.responsibleEmail}}" /></input></td>
                 <td><input type="text" class="form-control" id="descriptionInputE"
                         value="{{eTask.description}}" /></input></td>
-
+                <td><input type="text" class="form-control" id="statusInputE" ng-model="statusInputE" ng-change="verifyStatusUpdate()" ng-disable="eTask.comeToPending >= 2"
+                        /></input></td>
             </tr>
         </tbody>
     </table>
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="alterar()">Ok</button>
+    <input type="password" class="form-control" id="password" ng-model="passwordE" ng-if="eTask.enablePassword == true"/></input>
+    <button class="btn btn-primary" type="button" ng-click="alterarComoSurpervisor()" ng-if="eTask.enablePassword == true">Ok sup</button>
+    <button class="btn btn-primary" type="button" ng-click="alterar()"  ng-if="eTask.enablePassword == false">Ok</button>
     <button class="btn btn-warning" type="button" ng-click="cancelar()">Cancelar</button>
 </div>

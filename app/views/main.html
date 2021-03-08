@@ -20,7 +20,8 @@
                               <td><input type = "text" class="form-control" ng-model="responsibleInput" id="responsibleInput"/></input></td>
                               <td><input type = "text" class="form-control" ng-model="responsibleEmailInput" id="responsibleEmailInput"/></input></td>
                               <td><input type = "text" class="form-control" ng-model="descriptionInput" id="descriptionInput"/></input></td>
-                              <td> <select  ng-model="selectStatus" id="selectStatus" class="form-control" ng-options="option.label for option in options"></select></td>
+                              <td><input type = "text" class="form-control" ng-model="statusInput" id="statusInput"/></input></td>
+
                               <td class="text-center">
                               <button class="btn btn-sm btn-default" type="button" name="button" ng-click="incluir()"> <span class="glyphicon glyphicon-plus"></span> Incluir</button>
                               </td>
@@ -40,6 +41,7 @@
                       <th class="col-sm-3 text-center">Responsável</th>
                       <th class="col-sm-2 text-center">Email do responsável</th>
                       <th class="col-sm-3 text-center">Descrição</th>
+                      <th class="col-sm-3 text-center">Quant. mudanças</th>
                       <th class="col-sm-2 text-center">Status</th>
                       <th class="col-sm-2 text-center">Ação</th>
                   </tr>
@@ -49,6 +51,7 @@
                       <td class="text-center vertical-text-align">{{task.responsible}}</td>
                       <td class="text-center vertical-text-align"><span class="label label-default">{{task.responsibleEmail}}</span></td>
                       <td class= "text-center vertical-text-align"><span class="label label-default">{{task.description}}</span></td>
+                      <td class= "text-center vertical-text-align"><span class="label label-default">{{task.comeToPending}}</span></td>
                       <td class="text-center vertical-text-align"><span class="label label-default">{{task.status}}</span>
                       </td>
                       <td class="text-center vertical-text-align">
