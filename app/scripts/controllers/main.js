@@ -18,7 +18,6 @@ app.controller('MainCtrl', ['$scope', '$http', '$uibModal', '$rootScope', functi
     $rootScope.tasks = [];
     
 
-
     $http.get(baseUrl).then(function (response) {
         $rootScope.tasks = response.data.dataTask;
     }, function (err) {
@@ -34,6 +33,14 @@ app.controller('MainCtrl', ['$scope', '$http', '$uibModal', '$rootScope', functi
             validacao = 1;
         }
 
+        if(angular.element('#statusInput').val() != 'p' && angular.element('#statusInput').val() != 'c'){
+            validacao = 0;
+        }
+
+        if(angular.element('#statusInput').val() == 'p' || angular.element('#statusInput').val() == 'c'){
+            validacao = 1;
+        }
+
     }
 
     const apagarCampos = function () {
@@ -43,6 +50,43 @@ app.controller('MainCtrl', ['$scope', '$http', '$uibModal', '$rootScope', functi
         $scope.responsibleEmailInput = null;
     }
     
+    $scope.incluirQualquerTarefa = function () {
+        var auxArray = [];
+        var objTask;
+        $http.get("http://cat-fact.herokuapp.com/facts").then(function(res){
+            auxArray = res.data.slice(0, 3);
+            
+            for(var i = 0; i < 3; i +=1){
+                 objTask = {
+                    "responsible": "Eu",
+                    "responsibleEmail": "eu@me.com",
+                    "description": (auxArray[i].text).substring(0,35),
+                    "comeToPending": 0,
+                    "status": "p"
+                }
+                $http.post(baseUrl, objTask).then(function (response) {
+                    if (response) {
+                        $http.get(baseUrl).then(function (response) {
+                            $rootScope.tasks = response.data.dataTask;
+                        }, function (err) {
+                            console.log(err);
+                        });
+                    };
+                },
+                function(error){
+                    swal("Infelizmente as tarefas não foram adicionadas", " Tente novamente mais tarde. ", "error");
+                    console.log(error); 
+                    return;
+               }) ;
+            }
+            swal("Tarefas adicionadas", " Adicionadas com Sucesso! ", "success");
+
+
+        });
+
+     
+    }
+
     $scope.incluir = function () {
         validacaoDeCampos();
         
@@ -50,7 +94,6 @@ app.controller('MainCtrl', ['$scope', '$http', '$uibModal', '$rootScope', functi
  
         if (validacao == 1) {
             //var documento = angular.element('#documentoInput').val().replace(/\D/g, '');
-            var tamanhoTasks = $rootScope.tasks.length;
             $http.post("http://apilayer.net/api/check?access_key=9c3a308e83057808906c5fb1f769057c&email="+angular.element('#responsibleEmailInput').val()).then(function(res){
                
                 var objTask = {
@@ -64,7 +107,11 @@ app.controller('MainCtrl', ['$scope', '$http', '$uibModal', '$rootScope', functi
               
                         $http.post(baseUrl, objTask).then(function (response) {
                             if (response) {
-                                $rootScope.tasks.push(response.data);
+                                $http.get(baseUrl).then(function (response) {
+                                    $rootScope.tasks = response.data.dataTask;
+                                }, function (err) {
+                                    console.log(err);
+                                });
                                 swal("Adicionado", " Adicionado com Sucesso! ", "success");
                                 apagarCampos();
                             };
@@ -80,7 +127,11 @@ app.controller('MainCtrl', ['$scope', '$http', '$uibModal', '$rootScope', functi
             }else{
                 $http.post(baseUrl, objTask).then(function (response) {
                     if (response) {
-                        $rootScope.tasks.push(response.data);
+                        $http.get(baseUrl).then(function (response) {
+                            $rootScope.tasks = response.data.dataTask;
+                        }, function (err) {
+                            console.log(err);
+                        });
                         swal("Adicionado", " Adicionado com Sucesso! ", "success");
                         apagarCampos();
                     };

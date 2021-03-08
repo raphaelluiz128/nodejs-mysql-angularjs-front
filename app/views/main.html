@@ -11,7 +11,7 @@
                               <th class="col-sm-3 text-center">Responsável</th>
                               <th class="col-sm-2 text-center">Email do responsável</th>
                               <th class="col-sm-3 text-center">Descrição</th>
-                              <th class="col-sm-2 text-center">Status</th>
+                              <th class="col-sm-2 text-center">Status (p ou c)</th>
                               <th class="col-sm-2 text-center">Ação</th>
                           </tr>
                       </thead>
@@ -24,13 +24,15 @@
 
                               <td class="text-center">
                               <button class="btn btn-sm btn-default" type="button" name="button" ng-click="incluir()"> <span class="glyphicon glyphicon-plus"></span> Incluir</button>
-                              </td>
+                              <button class="btn btn-sm btn-default" type="button" name="button" ng-click="incluirQualquerTarefa()"> <span class="glyphicon glyphicon-plus"></span> Estou sem tarefas</button>
+
+                            </td>
                           </tr>
                       </tbody>
                   </table>
                   </div>
   </div>
-  <div class="panel panel-default">
+  <div class="panel panel-default" ng-show="tasks.length > 0">
       <div class="panel-heading headertable"> Tarefas cadastradas </div>
       <div class="panel-body" style="overflow: scroll; height: 300px;">
       
@@ -56,7 +58,6 @@
                       </td>
                       <td class="text-center vertical-text-align">
                           <button class="btn btn-sm btn-default" ng-click="modalEditar(task)" type="button" name="button"> <span class="glyphicon glyphicon-pencil"></span> Editar</button>
-                          <button class="btn btn-sm btn-default" ng-click="remover(task)" type="button" name="button"> <span class="glyphicon glyphicon-trash"></span> Excluir</button>
                       </td>
                   </tr>
               </tbody>
