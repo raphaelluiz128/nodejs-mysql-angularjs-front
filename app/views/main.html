@@ -17,10 +17,10 @@
                       </thead>
                       <tbody>
                           <tr>
-                              <td><input type = "text" class="form-control" id="responsibleInput"/></input></td>
-                              <td><input type = "text" class="form-control" id="responsibleEmailInput"/></input></td>
-                              <td><input type = "text" class="form-control" id="descriptionInput"/></input></td>
-                              <td> <select name="selectStatus" class="form-control" ng-model="selectStatus" id="selectStatus" options="options"></select></td>
+                              <td><input type = "text" class="form-control" ng-model="responsibleInput" id="responsibleInput"/></input></td>
+                              <td><input type = "text" class="form-control" ng-model="responsibleEmailInput" id="responsibleEmailInput"/></input></td>
+                              <td><input type = "text" class="form-control" ng-model="descriptionInput" id="descriptionInput"/></input></td>
+                              <td> <select  ng-model="selectStatus" id="selectStatus" class="form-control" ng-options="option.label for option in options"></select></td>
                               <td class="text-center">
                               <button class="btn btn-sm btn-default" type="button" name="button" ng-click="incluir()"> <span class="glyphicon glyphicon-plus"></span> Incluir</button>
                               </td>
@@ -31,9 +31,9 @@
   </div>
   <div class="panel panel-default">
       <div class="panel-heading headertable"> Tarefas cadastradas </div>
-      <div class="panel-body">
+      <div class="panel-body" style="overflow: scroll; height: 300px;">
       
-          <table class="table table-bordered">
+          <table class="table table-bordered" style="height: 280px;" >
                   
               <thead>
                   <tr>

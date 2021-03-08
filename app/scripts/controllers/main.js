@@ -10,26 +10,30 @@
 
 var app = angular.module('nodejsMysqlAngularjsFrontApp');
 var validacao;
-var baseUrl = 'https://apiead.herokuapp.com/api/clientes';
+var baseUrl = 'http://localhost:3002/tasks';
 
-var options = [
-    'Pendente', 'Concluída'
-];
+
 
 app.controller('MainCtrl', ['$scope', '$http', '$uibModal', '$rootScope', function ($scope, $http, $uibModal, $rootScope, data) {
-    $rootScope.clientes = {};
+    $rootScope.tasks = [];
     
-    $rootScope.options =  options;
+    $scope.options = [{
+        id: 1,
+        label: 'Pendente',
+      }, {
+        id: 2,
+        label: 'Concluída',
+      }];
 
     $http.get(baseUrl).then(function (response) {
-        $rootScope.clientes = response.data;
+        $rootScope.tasks = response.data.dataTask;
     }, function (err) {
         console.log(err);
     });
 
     const validacaoDeCampos = function () {
         if (angular.element('#responsibleEmailInput').val() == '' || angular.element('#responsibleInput').val() == '' ||
-            angular.element('#descriptionInput').val() == '') {
+            angular.element('#descriptionInput').val() == '' || $scope.selectStatus == null) {
             swal("Campos em branco", " Por favor informe todos os dados dos campos! ", "warning");
             validacao = 0;
         } else {
@@ -38,28 +42,39 @@ app.controller('MainCtrl', ['$scope', '$http', '$uibModal', '$rootScope', functi
 
     }
 
+    const apagarCampos = function () {
+        $scope.selectStatus = null;
+        $scope.descriptionInput = null;
+        $scope.responsibleInput = null;
+        $scope.responsibleEmailInput = null;
+    }
+    
     $scope.incluir = function () {
         validacaoDeCampos();
-        var opcoes = [];
-        console.log($scope.selectStatus);
-        opcoes = $scope.selectStatus;
+        
+        var status = $scope.selectStatus;
  
         if (validacao == 1) {
             //var documento = angular.element('#documentoInput').val().replace(/\D/g, '');
-            var tamanhoClientes = $rootScope.tasks.length;
+            var tamanhoTasks = $rootScope.tasks.length;
             var objTask = {
                 "responsible": angular.element('#responsibleInput').val(),
-                "responsibleInput": angular.element('#responsibleEmailInput').val(),
-                "descriptionInput": angular.element('#descriptionInput').val(),
-                "status": opcoes
+                "responsibleEmail": angular.element('#responsibleEmailInput').val(),
+                "description": angular.element('#descriptionInput').val(),
+                "status": status.label
             }
-                    var key = tasks + 1;
-                    $http.post(baseUrl + '/', objCliente).then(function (response) {
+                    //var key = tasks + 1;
+                    $http.post(baseUrl, objTask).then(function (response) {
                         if (response) {
-                            $rootScope.clientes.push(response.data);
+                            $rootScope.tasks.push(response.data);
                             swal("Adicionado", " Adicionado com Sucesso! ", "success");
+                            apagarCampos();
                         };
-                    });
+                    },
+                    function(error){
+                        console.log(error); //
+                   }) ;
+                    
                 }
     };
 
