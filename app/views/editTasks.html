@@ -1,0 +1,33 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title">Edição de clientes</h3>
+</div>
+<div class="modal-body" id="modal-body">
+
+
+
+    <table class="table table-bordered">
+
+        <thead>
+            <tr>
+                <th class="col-sm-5">Responsável</th>
+                <th class="col-sm-3">Email do Responsável</th>
+                <th class="col-sm-4">Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><input type="text" class="form-control" id="responsibleInputE" value="{{eTask.responsible}}" /></input></td>
+                <td><input type="text" class="form-control" id="responsibleEmailInputE"
+                        value="{{eTask.responsibleEmail}}" /></input></td>
+                <td><input type="text" class="form-control" id="descriptionInputE"
+                        value="{{eTask.description}}" /></input></td>
+
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="alterar()">Ok</button>
+    <button class="btn btn-warning" type="button" ng-click="cancelar()">Cancelar</button>
+</div>

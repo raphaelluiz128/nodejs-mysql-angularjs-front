@@ -38,6 +38,15 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "karma start test\\karma.conf.js"
+    "test": "karma start test\\karma.conf.js",
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "angular-datatables": "^0.6.2",
+    "bower": "1.8.8",
+    "compass": "^0.1.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jquery": "^3.4.1"
   }
 }
