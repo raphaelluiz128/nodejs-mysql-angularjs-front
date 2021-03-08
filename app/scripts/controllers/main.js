@@ -57,25 +57,32 @@ app.controller('MainCtrl', ['$scope', '$http', '$uibModal', '$rootScope', functi
         if (validacao == 1) {
             //var documento = angular.element('#documentoInput').val().replace(/\D/g, '');
             var tamanhoTasks = $rootScope.tasks.length;
-            var objTask = {
-                "responsible": angular.element('#responsibleInput').val(),
-                "responsibleEmail": angular.element('#responsibleEmailInput').val(),
-                "description": angular.element('#descriptionInput').val(),
-                "status": status.label
-            }
-                    //var key = tasks + 1;
-                    $http.post(baseUrl, objTask).then(function (response) {
-                        if (response) {
-                            $rootScope.tasks.push(response.data);
-                            swal("Adicionado", " Adicionado com Sucesso! ", "success");
-                            apagarCampos();
-                        };
-                    },
-                    function(error){
-                        console.log(error); //
-                   }) ;
-                    
+            $http.post("http://apilayer.net/api/check?access_key=9c3a308e83057808906c5fb1f769057c&email="+angular.element('#responsibleEmailInput').val()).then(function(res){
+                if(res.data.mx_found == true && res.data.format_valid == true){
+                var objTask = {
+                    "responsible": angular.element('#responsibleInput').val(),
+                    "responsibleEmail": angular.element('#responsibleEmailInput').val(),
+                    "description": angular.element('#descriptionInput').val(),
+                    "status": status.label
                 }
+                        //var key = tasks + 1;
+                        $http.post(baseUrl, objTask).then(function (response) {
+                            if (response) {
+                                $rootScope.tasks.push(response.data);
+                                swal("Adicionado", " Adicionado com Sucesso! ", "success");
+                                apagarCampos();
+                            };
+                        },
+                        function(error){
+                            console.log(error); 
+                       }) ;
+            
+        }else{
+            swal(" Seu email não é válido!", "Você informou o email "+ angular.element('#responsibleEmailInput').val() +", mas acho que você tentou digitar"+res.data.did_you_mean+', devido a isso troquei o email na caixa de texto. Tente novamente.', "error");
+            $scope.responsibleEmailInput = res.data.did_you_mean;
+        }
+    })
+        }
     };
 
 
