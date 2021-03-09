@@ -159,7 +159,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$uibModal', '$rootScope', functi
 }]).controller('editarCtrl', function ($scope, $uibModalInstance, $http) {
     $scope.eTask = JSON.parse(sessionStorage.eTask);
     $scope.statusInputE = $scope.eTask.status;
-
+    $scope.eTask.enablePassword = '';
     sessionStorage.idEdicao = $scope.eTask.id;
 
     $scope.verifyStatusUpdate = function () {
@@ -177,7 +177,9 @@ app.controller('MainCtrl', ['$scope', '$http', '$uibModal', '$rootScope', functi
 
 
     $scope.alterarComoSurpervisor = function () {
-        if ($scope.passwordE == "TrabalheNaSaipos") {
+        console.log($scope.eTask.passwordE)
+        if ($scope.eTask.passwordE == "TrabalheNaSaipos") {
+            
             $scope.alterar();
         } else {
             swal("Senha inválida!", " Tenta novamente ", "error");

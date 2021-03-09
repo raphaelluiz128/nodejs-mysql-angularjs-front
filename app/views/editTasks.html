@@ -30,7 +30,7 @@
 </div>
 
 <div class="modal-footer">
-    <input type="password" class="form-control" id="password" ng-model="passwordE" ng-if="eTask.enablePassword == true"/></input>
+    <input type="password" class="form-control" id="password" id="passwordE" ng-model="eTask.passwordE" ng-if="eTask.enablePassword == true"/></input>
     <button class="btn btn-primary" type="button" ng-click="alterarComoSurpervisor()" ng-if="eTask.enablePassword == true">Ok sup</button>
     <button class="btn btn-primary" type="button" ng-click="alterar()"  ng-if="eTask.enablePassword == false">Ok</button>
     <button class="btn btn-warning" type="button" ng-click="cancelar()">Cancelar</button>

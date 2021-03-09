@@ -16,3 +16,4 @@ https://github.com/raphaelluiz128/nodejs-mysql-angularjs
 
 ## example video
 https://www.loom.com/share/50a14fb333424df4af99f59e103ba43a
+https://www.loom.com/share/72f3c96e11754b75bf07003684e5413f
